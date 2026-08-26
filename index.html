@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1b1330">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<title>المحبة | اصحاح ١٣ ولوحة الترتيب</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1b1330;
+    --ink-2:#241a3d;
+    --ink-3:#332552;
+    --gold:#c9a227;
+    --gold-light:#eccf7d;
+    --parchment:#f6ecd9;
+    --paper:#fbf6ea;
+    --wine:#7a2e40;
+    --amber:#c9862f;   /* القداس */
+    --blue:#2f5d8a;    /* مدارس الأحد */
+    --green:#3f6b45;   /* المشاركة */
+    --rose:#8a3352;    /* السلوك */
+    --line: rgba(201,162,39,0.28);
+    --shadow-sm: 0 2px 10px rgba(0,0,0,.25);
+    --shadow-md: 0 10px 34px rgba(0,0,0,.38);
+    --ease: cubic-bezier(.22,1,.36,1);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #2a1f47 0%, var(--ink) 55%, #140d24 100%);
+    color:var(--parchment);
+    font-family:'Cairo',sans-serif;
+    min-height:100vh;
+    padding-bottom:60px;
+    -webkit-font-smoothing:antialiased;
+    animation:pageIn .5s var(--ease);
+  }
+  @keyframes pageIn{from{opacity:0;}to{opacity:1;}}
+  h1,h2,h3,.display{font-family:'Amiri',serif;}
+  .wrap{max-width:1000px;margin:0 auto;padding:28px 20px 0;}
+
+  header.top{
+    text-align:center;
+    padding:36px 20px 18px;
+  }
+  header.top .eyebrow{
+    letter-spacing:.14em;
+    font-size:12.5px;
+    color:var(--gold-light);
+    opacity:.85;
+    margin-bottom:10px;
+  }
+  header.top h1{
+    font-size:clamp(30px,5vw,46px);
+    margin:0 0 8px;
+    color:var(--gold-light);
+    font-weight:700;
+    text-shadow:0 4px 24px rgba(201,162,39,.25);
+  }
+  header.top p{
+    color:#d9cdb8;
+    max-width:560px;
+    margin:0 auto;
+    font-size:15px;
+    line-height:1.9;
+  }
+
+  nav.tabs{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    margin:26px auto 8px;
+    flex-wrap:wrap;
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:6px;
+    width:fit-content;
+    max-width:100%;
+  }
+  nav.tabs button{
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    background:transparent;
+    border:1px solid transparent;
+    color:#e7dcc4;
+    padding:11px 22px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:all .25s var(--ease);
+  }
+  nav.tabs button:hover{border-color:var(--gold);background:rgba(255,255,255,.05);}
+  nav.tabs button.active{
+    background:linear-gradient(135deg,var(--gold-light),var(--gold));
+    color:var(--ink);
+    border-color:transparent;
+    box-shadow:0 6px 18px rgba(201,162,39,.35);
+  }
+
+  section.tab{display:none;padding:10px 0 40px;}
+  section.tab.active{display:block;animation:fadeUp .45s var(--ease);}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ---------- Rose window ---------- */
+  .rose-wrap{display:flex;flex-direction:column;align-items:center;margin:20px 0 10px;}
+  .rose-wrap svg{max-width:100%;height:auto;filter:drop-shadow(0 0 30px rgba(201,162,39,.18));}
+  .rose-wedge{cursor:pointer;transition:opacity .2s;}
+  .rose-wedge:hover{opacity:.82;}
+  .rose-num{font-family:'Amiri',serif;font-size:15px;fill:#fbf3de;font-weight:700;}
+  .rose-core-text{font-family:'Amiri',serif;fill:var(--ink);font-weight:700;}
+
+  .legend{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:10px;
+    margin-top:28px;
+  }
+  .legend .item{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px 16px;
+  }
+  .legend .dot{
+    flex:0 0 26px;
+    width:26px;height:26px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Amiri',serif;
+    font-size:13px;
+    font-weight:700;
+    color:#fff;
+    margin-top:2px;
+  }
+  .legend .txt b{display:block;font-size:15px;color:var(--gold-light);margin-bottom:3px;}
+  .legend .txt span{font-size:13px;color:#cfc3a8;line-height:1.7;}
+
+  .verse-note{
+    text-align:center;
+    max-width:620px;
+    margin:34px auto 0;
+    padding-top:22px;
+    border-top:1px solid var(--line);
+    color:#d9cdb8;
+    font-size:14.5px;
+    line-height:2;
+  }
+  .verse-note em{color:var(--gold-light);font-style:normal;font-family:'Amiri',serif;font-size:17px;}
+
+  /* ---------- Cards / panels ---------- */
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:24px 24px 26px;
+    margin-bottom:20px;
+    backdrop-filter:blur(16px);
+    box-shadow:var(--shadow-sm);
+    transition:box-shadow .3s var(--ease), border-color .3s var(--ease);
+  }
+  .panel:hover{box-shadow:var(--shadow-md);border-color:rgba(201,162,39,.4);}
+  .panel h2{
+    font-size:20px;
+    color:var(--gold-light);
+    margin:0 0 4px;
+    font-weight:700;
+  }
+  .panel .sub{color:#b6a98c;font-size:13px;margin-bottom:16px;}
+
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  input[type=text], input[type=date], select{
+    font-family:'Cairo',sans-serif;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--line);
+    color:var(--parchment);
+    padding:11px 16px;
+    border-radius:12px;
+    font-size:14px;
+    flex:1;
+    min-width:160px;
+    transition:border-color .2s, box-shadow .2s, background .2s;
+  }
+  input:focus, select:focus{
+    outline:none;
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px rgba(201,162,39,.18);
+    background:rgba(255,255,255,.06);
+  }
+  input::placeholder{color:#8a7d63;}
+  button.btn{
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    background:linear-gradient(135deg,var(--gold-light),var(--gold));
+    color:var(--ink);
+    border:none;
+    padding:11px 22px;
+    border-radius:12px;
+    cursor:pointer;
+    white-space:nowrap;
+    box-shadow:0 4px 14px rgba(201,162,39,.25);
+    transition:transform .18s var(--ease), box-shadow .18s var(--ease), filter .18s;
+  }
+  button.btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(201,162,39,.35);filter:brightness(1.05);}
+  button.btn:active{transform:translateY(0);box-shadow:0 2px 8px rgba(201,162,39,.25);}
+  button.btn:focus-visible{outline:2px solid var(--gold-light);outline-offset:2px;}
+  button.btn.ghost{
+    background:transparent;
+    color:var(--gold-light);
+    border:1px solid var(--line);
+    box-shadow:none;
+  }
+  button.btn.ghost:hover{background:rgba(255,255,255,.06);border-color:var(--gold);transform:translateY(-2px);}
+  button.btn.danger{
+    background:transparent;
+    color:#d98a94;
+    border:1px solid rgba(217,138,148,.35);
+    padding:6px 10px;
+    font-size:12px;
+    box-shadow:none;
+  }
+  button.btn.danger:hover{background:rgba(217,138,148,.1);border-color:#d98a94;}
+
+  .team-chip{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    padding:8px 14px;
+    border-radius:999px;
+    margin:4px 6px 4px 0;
+    font-size:13.5px;
+    transition:border-color .2s, transform .2s;
+  }
+  .team-chip .kids{color:#a99a7c;font-size:12px;}
+
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;}
+  table{width:100%;border-collapse:collapse;margin-top:10px;}
+  th,td{padding:10px 8px;text-align:right;font-size:13.5px;border-bottom:1px solid var(--line);}
+  th{color:var(--gold-light);font-weight:700;font-size:12.5px;}
+  td.name-cell{font-weight:600;}
+
+  .stars{display:inline-flex;gap:3px;direction:ltr;}
+  .stars button{
+    background:none;border:none;cursor:pointer;
+    font-size:18px;color:#4a3f66;padding:2px;
+    transition:transform .15s var(--ease), color .15s;
+  }
+  .stars button.filled{color:var(--gold);}
+  .stars button:hover{transform:scale(1.25);}
+
+  .cat-label{font-size:11px;color:#a99a7c;display:block;margin-bottom:3px;}
+
+  .empty{
+    text-align:center;color:#a99a7c;font-size:14px;
+    padding:30px 10px;
+  }
+  .spinner{
+    width:26px;height:26px;margin:0 auto 12px;
+    border:3px solid rgba(255,255,255,.12);
+    border-top-color:var(--gold);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ---------- Leaderboard ---------- */
+  .lb-toggle{display:flex;gap:8px;margin-bottom:16px;}
+  .lb-toggle button{
+    flex:1;
+    background:transparent;border:1px solid var(--line);
+    color:#e7dcc4;padding:10px;border-radius:12px;
+    font-family:'Cairo',sans-serif;font-weight:700;font-size:13.5px;cursor:pointer;
+    transition:all .2s var(--ease);
+  }
+  .lb-toggle button:hover{border-color:var(--gold);}
+  .lb-toggle button.active{background:var(--ink-3);border-color:var(--gold);color:var(--gold-light);box-shadow:var(--shadow-sm);}
+
+  .lb-row{
+    display:flex;align-items:center;gap:14px;
+    padding:14px 8px;
+    border-bottom:1px solid var(--line);
+    border-radius:12px;
+    transition:background .2s;
+  }
+  .lb-row:hover{background:rgba(255,255,255,.03);}
+  .lb-rank{
+    flex:0 0 34px;height:34px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Amiri',serif;font-size:16px;font-weight:700;
+    color:var(--gold-light);
+    background:rgba(255,255,255,.05);
+    border-radius:50%;
+  }
+  .lb-rank.top{
+    color:var(--ink);
+    background:linear-gradient(135deg,var(--gold-light),var(--gold));
+    box-shadow:0 4px 14px rgba(201,162,39,.35);
+    font-size:18px;
+  }
+  .lb-main{flex:1;min-width:0;}
+  .lb-name{font-weight:700;font-size:14.5px;margin-bottom:6px;}
+  .lb-bar-track{
+    height:9px;border-radius:6px;overflow:hidden;
+    background:rgba(255,255,255,.06);
+    display:flex;
+  }
+  .lb-bar-seg{height:100%;width:0;transition:width .8s var(--ease);}
+  .lb-score{flex:0 0 50px;text-align:left;font-weight:800;font-size:16px;color:var(--gold-light);}
+  .lb-sub{font-size:11.5px;color:#a99a7c;margin-top:4px;}
+
+  footer.credit{
+    text-align:center;color:#7a6e56;font-size:11.5px;margin-top:40px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">١ كورنثوس ١٣</div>
+    <h1>المحبة</h1>
+    <p>وسيلة إيضاح لأصحاح المحبة، وبجانبها لوحة ترتيب الفرق والأطفال.</p>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="teach" class="active">الاصحاح ١٣ – المحبة</button>
+    <button data-tab="score">لوحة الترتيب</button>
+  </nav>
+
+  <!-- ================= TAB 1: TEACHING ================= -->
+  <section class="tab active" id="tab-teach">
+    <div class="rose-wrap">
+      <svg id="rose-svg" viewBox="0 0 440 440"></svg>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="verse-note">
+      <em>"وأما الآن فيثبت الإيمان والرجاء والمحبة، هذه الثلاثة، ولكن أعظمهن المحبة."</em><br>
+      ثلاثة عشر صفة للمحبة، بعدد أصحاحها... كل صفة قطعة زجاج ملوّن في نافذة واحدة، لا تكتمل الصورة إلا بها كلها معًا.
+    </div>
+  </section>
+
+  <!-- ================= TAB 2: LEADERBOARD (read-only) ================= -->
+  <section class="tab" id="tab-score">
+    <div class="panel">
+      <h2>لوحة الترتيب</h2>
+      <div class="lb-toggle">
+        <button class="active" data-mode="teams">ترتيب الفرق</button>
+        <button data-mode="kids">ترتيب الأطفال</button>
+      </div>
+      <div id="leaderboard"><div class="empty"><div class="spinner"></div>بيتحمّل...</div></div>
+    </div>
+  </section>
+
+  <footer class="credit">القداس · مدارس الأحد · المشاركة · السلوك</footer>
+</div>
+
+<script>
+(function(){
+
+  // ---------------- Data ----------------
+  const CATS = [
+    {key:'mass', label:'القداس', color:'var(--amber)', hex:'#c9862f'},
+    {key:'sunday', label:'مدارس الأحد', color:'var(--blue)', hex:'#2f5d8a'},
+    {key:'participation', label:'المشاركة', color:'var(--green)', hex:'#3f6b45'},
+    {key:'behavior', label:'السلوك', color:'var(--rose)', hex:'#8a3352'},
+  ];
+
+  const LOVE_QUALITIES = [
+    "تتأنى", "ترفق", "لا تحسد", "لا تتفاخر", "لا تنتفخ",
+    "لا تقبح", "لا تطلب ما لنفسها", "لا تحتد", "لا تظن السوء",
+    "لا تفرح بالظلم", "تفرح بالحق", "تحتمل كل شيء وتصبر على الجميع", "لا تسقط أبدًا"
+  ];
+  const LOVE_DETAILS = [
+    "تصبر طويلًا ولا تستعجل رد الإساءة.",
+    "تبادر بالخير ولو لم تُطلب منها.",
+    "لا تضيق بخير أحد أو تميّزه عنها.",
+    "لا تتباهى بما تفعله من أجل الآخرين.",
+    "لا تشعر بأنها أفضل من غيرها.",
+    "لا تتعامل بجفاء أو إهانة.",
+    "لا تبحث عن مصلحتها أولًا.",
+    "لا تنفعل وتفقد صبرها بسرعة.",
+    "لا تحصي أخطاء من أحبّته.",
+    "لا يسعدها أن يخطئ أحد.",
+    "تفرح حين ينتصر الصدق والصواب.",
+    "تكمل الطريق مهما طال، ولا تيأس.",
+    "مهما تغيّر كل شيء حولها، هي تبقى."
+  ];
+
+  // رابط Google Apps Script Web App (نفسه المستخدم في admin.html) — للقراءة فقط هنا
+  const API_URL = 'https://script.google.com/macros/s/AKfycbw7YEzPJ90icN1qafuMmzVN4L3EN9W_m2tELMIiIISwHGN4rGFjMnYWmnZTl07UWi0ggQ/exec';
+
+  let state = { teams: [], children: [], sessions: [], scores: {} };
+
+  async function apiGet(){
+    const res = await fetch(API_URL, {method:'GET'});
+    const json = await res.json();
+    if(!json.ok) throw new Error(json.error || 'read_failed');
+    return json.data;
+  }
+
+  async function loadState(){
+    try{
+      state = Object.assign({teams:[],children:[],sessions:[],scores:{}}, await apiGet());
+    }catch(e){
+      console.error('تعذر تحميل البيانات من الشيت', e);
+    }
+    renderAll();
+  }
+
+  // ---------------- Tabs ----------------
+  document.querySelectorAll('nav.tabs button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('section.tab').forEach(s=>s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ---------------- Rose window (teaching) ----------------
+  function buildRoseWindow(){
+    const svg = document.getElementById('rose-svg');
+    const n = LOVE_QUALITIES.length;
+    const cx=220, cy=220, rOuter=200, rInner=74;
+    const ns = 'http://www.w3.org/2000/svg';
+    let html = '';
+
+    function pt(r, ang){ return [cx + r*Math.cos(ang), cy + r*Math.sin(ang)]; }
+
+    // warm gradient across gold -> wine
+    function colorAt(i){
+      const t = i/(n-1);
+      const c1 = [232,207,125]; // gold-light
+      const c2 = [122,46,64];   // wine
+      const r = Math.round(c1[0]+(c2[0]-c1[0])*t);
+      const g = Math.round(c1[1]+(c2[1]-c1[1])*t);
+      const b = Math.round(c1[2]+(c2[2]-c1[2])*t);
+      return `rgb(${r},${g},${b})`;
+    }
+
+    for(let i=0;i<n;i++){
+      const a0 = (i/n)*2*Math.PI - Math.PI/2;
+      const a1 = ((i+1)/n)*2*Math.PI - Math.PI/2;
+      const [ox0,oy0] = pt(rOuter,a0);
+      const [ox1,oy1] = pt(rOuter,a1);
+      const [ix0,iy0] = pt(rInner,a0);
+      const [ix1,iy1] = pt(rInner,a1);
+      const mid = (a0+a1)/2;
+      const [lx,ly] = pt((rOuter+rInner)/2, mid);
+      const col = colorAt(i);
+      html += `<path class="rose-wedge" d="M ${ix0} ${iy0} L ${ox0} ${oy0} A ${rOuter} ${rOuter} 0 0 1 ${ox1} ${oy1} L ${ix1} ${iy1} A ${rInner} ${rInner} 0 0 0 ${ix0} ${iy0} Z" fill="${col}" stroke="#140d24" stroke-width="2">
+        <title>${i+1}. ${LOVE_QUALITIES[i]}</title>
+      </path>`;
+      html += `<text class="rose-num" x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle">${i+1}</text>`;
+    }
+
+    html += `<circle cx="${cx}" cy="${cy}" r="${rInner-4}" fill="#eccf7d"/>`;
+    html += `<text class="rose-core-text" x="${cx}" y="${cy-4}" text-anchor="middle" font-size="26">المحبة</text>`;
+    html += `<text class="rose-core-text" x="${cx}" y="${cy+18}" text-anchor="middle" font-size="12" font-weight="400">اصحاح ١٣</text>`;
+
+    svg.innerHTML = html;
+
+    // legend
+    const legend = document.getElementById('legend');
+    legend.innerHTML = LOVE_QUALITIES.map((q,i)=>{
+      return `<div class="item">
+        <div class="dot" style="background:${colorAtExport(i,n)}">${i+1}</div>
+        <div class="txt"><b>${q}</b><span>${LOVE_DETAILS[i]}</span></div>
+      </div>`;
+    }).join('');
+
+    function colorAtExport(i,n){
+      const t=i/(n-1);
+      const c1=[232,207,125], c2=[122,46,64];
+      const r=Math.round(c1[0]+(c2[0]-c1[0])*t);
+      const g=Math.round(c1[1]+(c2[1]-c1[1])*t);
+      const b=Math.round(c1[2]+(c2[2]-c1[2])*t);
+      return `rgb(${r},${g},${b})`;
+    }
+  }
+
+  // ---------------- Totals & leaderboard (read-only) ----------------
+  function childCatTotals(childId){
+    const totals = {mass:0,sunday:0,participation:0,behavior:0};
+    Object.keys(state.scores).forEach(k=>{
+      if(k.endsWith('__'+childId)){
+        CATS.forEach(cat=> totals[cat.key]+= state.scores[k][cat.key]||0);
+      }
+    });
+    return totals;
+  }
+  function sumTotals(t){ return t.mass+t.sunday+t.participation+t.behavior; }
+
+  let lbMode = 'teams';
+  document.querySelectorAll('.lb-toggle button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('.lb-toggle button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      lbMode = b.dataset.mode;
+      renderLeaderboard();
+    });
+  });
+
+  const MEDALS = ['🥇','🥈','🥉'];
+
+  function barSegments(totals, max){
+    if(max<=0) return '';
+    return CATS.map(cat=>{
+      const w = (totals[cat.key]/max)*100;
+      return `<div class="lb-bar-seg" data-w="${w}" style="background:${cat.hex}"></div>`;
+    }).join('');
+  }
+
+  function renderLeaderboard(){
+    const el = document.getElementById('leaderboard');
+    let items = [];
+
+    if(lbMode==='teams'){
+      items = state.teams.map(t=>{
+        const kids = state.children.filter(c=>c.teamId===t.id);
+        const totals = {mass:0,sunday:0,participation:0,behavior:0};
+        kids.forEach(c=>{
+          const ct = childCatTotals(c.id);
+          CATS.forEach(cat=> totals[cat.key]+=ct[cat.key]);
+        });
+        return {name:t.name, totals, sub: kids.length+' طفل'};
+      });
+    } else {
+      items = state.children.map(c=>{
+        const totals = childCatTotals(c.id);
+        const team = state.teams.find(t=>t.id===c.teamId);
+        return {name:c.name, totals, sub: team? team.name : ''};
+      });
+    }
+
+    items = items.map(it=>({...it, score: sumTotals(it.totals)})).sort((a,b)=>b.score-a.score);
+
+    if(items.length===0){ el.innerHTML = '<div class="empty">لسه مفيش بيانات كفاية لعرض الترتيب.</div>'; return; }
+
+    const max = Math.max(...items.map(i=>i.score), 1);
+
+    el.innerHTML = items.map((it,i)=>`
+      <div class="lb-row">
+        <div class="lb-rank ${i<3?'top':''}">${i<3? MEDALS[i] : i+1}</div>
+        <div class="lb-main">
+          <div class="lb-name">${it.name}</div>
+          <div class="lb-bar-track">${barSegments(it.totals, max)}</div>
+          <div class="lb-sub">${it.sub}</div>
+        </div>
+        <div class="lb-score">${it.score}</div>
+      </div>
+    `).join('');
+
+    // نخلي البارات تتحرك من صفر للقيمة الحقيقية بدل ما تظهر جاهزة فجأة
+    requestAnimationFrame(()=> requestAnimationFrame(()=>{
+      el.querySelectorAll('.lb-bar-seg').forEach(seg=>{ seg.style.width = seg.dataset.w+'%'; });
+    }));
+  }
+
+  // ---------------- Render all ----------------
+  function renderAll(){
+    renderLeaderboard();
+  }
+
+  buildRoseWindow();
+  loadState();
+  setInterval(loadState, 20000); // يجيب آخر تحديثات باقي القادة كل ٢٠ ثانية
+})();
+</script>
+</body>
+</html>
