@@ -110,6 +110,20 @@ function removeTeamCascade_(teamId) {
   });
 }
 
+function moveChild_(childId, teamId) {
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Children');
+  var values = sh.getDataRange().getValues();
+  var headers = values[0];
+  var idIdx = headers.indexOf('id');
+  var teamIdx = headers.indexOf('teamId');
+  for (var i = 1; i < values.length; i++) {
+    if (values[i][idIdx] === childId) {
+      sh.getRange(i + 1, teamIdx + 1).setValue(teamId);
+      break;
+    }
+  }
+}
+
 function setScoreRow_(sessionId, childId, cat, val) {
   var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Scores');
   var values = sh.getDataRange().getValues();
@@ -171,6 +185,9 @@ function doPost(e) {
       case 'removeChild':
         removeRowsWhere_('Children', function (r) { return r.id === p.id; });
         removeRowsWhere_('Scores', function (r) { return r.childId === p.id; });
+        break;
+      case 'moveChild':
+        moveChild_(p.id, p.teamId);
         break;
       case 'addSession':
         addRow_('Sessions', { id: p.id, date: p.date, label: p.label || '' });

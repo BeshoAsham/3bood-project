@@ -212,8 +212,20 @@
     display:flex;align-items:center;justify-content:center;
     font-size:13px;line-height:1;cursor:pointer;padding:0;
     transition:background .2s, transform .2s;
+    flex:none;
   }
   .kid-chip button:hover{background:rgba(217,138,148,.28);transform:scale(1.12);}
+  .kid-chip select.kid-team-select{
+    flex:none;width:auto;min-width:0;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--line);
+    color:#cfc3a8;
+    font-size:11px;
+    padding:3px 6px;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  .kid-chip select.kid-team-select:focus{outline:none;box-shadow:0 0 0 2px rgba(201,162,39,.18);}
 
   .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;}
   table{width:100%;border-collapse:collapse;margin-top:10px;}
@@ -592,7 +604,14 @@
     if(state.teams.length===0){ el.innerHTML = '<div class="empty">لسه مفيش فرق. ابدأ بإضافة أول فريق.</div>'; return; }
     el.innerHTML = state.teams.map(t=>{
       const kids = state.children.filter(c=>c.teamId===t.id);
-      const kidsHtml = kids.map(c=>`<span class="kid-chip">${c.name}<button data-remove-child="${c.id}" title="حذف ${c.name}">×</button></span>`).join('');
+      const kidsHtml = kids.map(c=>{
+        const moveSelect = state.teams.length > 1
+          ? `<select class="kid-team-select" data-child="${c.id}" title="نقل ${c.name} لفريق تاني">
+              ${state.teams.map(team=>`<option value="${team.id}" ${team.id===c.teamId?'selected':''}>${team.name}</option>`).join('')}
+            </select>`
+          : '';
+        return `<span class="kid-chip">${c.name}${moveSelect}<button data-remove-child="${c.id}" title="حذف ${c.name}">×</button></span>`;
+      }).join('');
       return `<div class="team-card">
         <div class="team-head">
           <b>${t.name}</b>
@@ -604,6 +623,19 @@
 
     el.querySelectorAll('[data-remove-team]').forEach(b=>b.addEventListener('click', ()=>removeTeam(b.dataset.removeTeam)));
     el.querySelectorAll('[data-remove-child]').forEach(b=>b.addEventListener('click', ()=>removeChild(b.dataset.removeChild)));
+    el.querySelectorAll('.kid-team-select').forEach(sel=>{
+      sel.addEventListener('click', e=> e.stopPropagation());
+      sel.addEventListener('change', ()=> moveChild(sel.dataset.child, sel.value));
+    });
+  }
+
+  function moveChild(id, teamId){
+    const child = state.children.find(c=>c.id===id);
+    if(!child || child.teamId===teamId) return;
+    const prevTeamId = child.teamId;
+    child.teamId = teamId;
+    renderAll();
+    mutateBg('moveChild', {id, teamId}, ()=>{ child.teamId = prevTeamId; });
   }
 
   function renderTeamSelect(){
