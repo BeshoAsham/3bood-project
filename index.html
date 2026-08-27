@@ -292,6 +292,28 @@
     transition:background .2s;
   }
   .lb-row:hover{background:rgba(255,255,255,.03);}
+  .lb-row.clickable{cursor:pointer;}
+  .lb-name{display:flex;align-items:center;gap:6px;}
+  .lb-caret{font-size:11px;color:#a99a7c;transition:transform .25s var(--ease);}
+  .lb-caret.open{transform:rotate(180deg);}
+
+  .kids-sublist{
+    margin:2px 0 10px;
+    margin-inline-start:48px;
+    padding:6px 14px;
+    background:rgba(255,255,255,.02);
+    border:1px solid var(--line);
+    border-radius:12px;
+    animation:fadeUp .3s var(--ease);
+  }
+  .kid-sub-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:8px 4px;
+    border-bottom:1px solid rgba(201,162,39,.12);
+    font-size:13px;color:#e7dcc4;
+  }
+  .kid-sub-row:last-child{border-bottom:none;}
+  .kid-sub-score{color:var(--gold-light);font-weight:700;font-size:13px;}
   .lb-rank{
     flex:0 0 34px;height:34px;
     display:flex;align-items:center;justify-content:center;
@@ -511,6 +533,7 @@
   });
 
   const MEDALS = ['🥇','🥈','🥉'];
+  let expandedTeams = new Set();
 
   function barSegments(totals, max){
     if(max<=0) return '';
@@ -518,6 +541,14 @@
       const w = (totals[cat.key]/max)*100;
       return `<div class="lb-bar-seg" data-w="${w}" style="background:${cat.hex}"></div>`;
     }).join('');
+  }
+
+  function kidsSublist(kids){
+    if(!kids.length) return '<div class="kids-sublist"><div class="empty" style="padding:10px;">لا يوجد أطفال في الفريق ده.</div></div>';
+    const rows = kids.map(c=>({name:c.name, score:sumTotals(childCatTotals(c.id))})).sort((a,b)=>b.score-a.score);
+    return `<div class="kids-sublist">${rows.map(r=>`
+      <div class="kid-sub-row"><span>${r.name}</span><span class="kid-sub-score">${r.score}</span></div>
+    `).join('')}</div>`;
   }
 
   function renderLeaderboard(){
@@ -532,13 +563,13 @@
           const ct = childCatTotals(c.id);
           CATS.forEach(cat=> totals[cat.key]+=ct[cat.key]);
         });
-        return {name:t.name, totals, sub: kids.length+' طفل'};
+        return {id:t.id, name:t.name, totals, sub: kids.length+' طفل', kids};
       });
     } else {
       items = state.children.map(c=>{
         const totals = childCatTotals(c.id);
         const team = state.teams.find(t=>t.id===c.teamId);
-        return {name:c.name, totals, sub: team? team.name : ''};
+        return {id:c.id, name:c.name, totals, sub: team? team.name : ''};
       });
     }
 
@@ -547,23 +578,36 @@
     if(items.length===0){ el.innerHTML = '<div class="empty">لسه مفيش بيانات كفاية لعرض الترتيب.</div>'; return; }
 
     const max = Math.max(...items.map(i=>i.score), 1);
+    const clickable = lbMode==='teams';
 
-    el.innerHTML = items.map((it,i)=>`
-      <div class="lb-row">
+    el.innerHTML = items.map((it,i)=>{
+      const expanded = clickable && expandedTeams.has(it.id);
+      return `
+      <div class="lb-row ${clickable?'clickable':''}" ${clickable?`data-team-id="${it.id}"`:''}>
         <div class="lb-rank ${i<3?'top':''}">${i<3? MEDALS[i] : i+1}</div>
         <div class="lb-main">
-          <div class="lb-name">${it.name}</div>
+          <div class="lb-name">${it.name}${clickable?`<span class="lb-caret ${expanded?'open':''}">▾</span>`:''}</div>
           <div class="lb-bar-track">${barSegments(it.totals, max)}</div>
           <div class="lb-sub">${it.sub}</div>
         </div>
         <div class="lb-score">${it.score}</div>
       </div>
-    `).join('');
+      ${expanded? kidsSublist(it.kids) : ''}
+    `;
+    }).join('');
 
     // نخلي البارات تتحرك من صفر للقيمة الحقيقية بدل ما تظهر جاهزة فجأة
     requestAnimationFrame(()=> requestAnimationFrame(()=>{
       el.querySelectorAll('.lb-bar-seg').forEach(seg=>{ seg.style.width = seg.dataset.w+'%'; });
     }));
+
+    el.querySelectorAll('.lb-row.clickable').forEach(row=>{
+      row.addEventListener('click', ()=>{
+        const id = row.dataset.teamId;
+        if(expandedTeams.has(id)) expandedTeams.delete(id); else expandedTeams.add(id);
+        renderLeaderboard();
+      });
+    });
   }
 
   // ---------------- Render all ----------------
