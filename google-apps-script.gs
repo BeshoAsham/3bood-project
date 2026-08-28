@@ -24,12 +24,23 @@ function ensureSheets() {
     Teams: ['id', 'name'],
     Children: ['id', 'name', 'teamId'],
     Sessions: ['id', 'date', 'label'],
-    Scores: ['sessionId', 'childId', 'mass', 'sunday', 'participation', 'behavior']
+    Scores: ['sessionId', 'childId', 'mass', 'sunday', 'participation', 'behavior', 'attendance']
   };
   Object.keys(defs).forEach(function (name) {
     var sh = ss.getSheetByName(name);
     if (!sh) sh = ss.insertSheet(name);
-    if (sh.getLastRow() === 0) sh.appendRow(defs[name]);
+    if (sh.getLastRow() === 0) {
+      sh.appendRow(defs[name]);
+    } else {
+      // migration: add any newly-introduced columns to existing sheets without touching old rows
+      var headers = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+      defs[name].forEach(function (col) {
+        if (headers.indexOf(col) === -1) {
+          sh.getRange(1, sh.getLastColumn() + 1).setValue(col);
+          headers.push(col);
+        }
+      });
+    }
   });
   var def = ss.getSheetByName('Sheet1');
   if (def && def.getLastRow() === 0 && ss.getSheets().length > 1) {
@@ -63,7 +74,8 @@ function getAllData() {
       mass: Number(s.mass) || 0,
       sunday: Number(s.sunday) || 0,
       participation: Number(s.participation) || 0,
-      behavior: Number(s.behavior) || 0
+      behavior: Number(s.behavior) || 0,
+      attendance: Number(s.attendance) || 0
     };
   });
   return { teams: teams, children: children, sessions: sessions, scores: scores };

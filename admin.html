@@ -22,6 +22,7 @@
     --blue:#2f5d8a;
     --green:#3f6b45;
     --rose:#8a3352;
+    --teal:#3f8f8f;   /* الحضور */
     --line: rgba(201,162,39,0.28);
     --shadow-sm: 0 2px 10px rgba(0,0,0,.25);
     --shadow-md: 0 10px 34px rgba(0,0,0,.38);
@@ -403,6 +404,12 @@
     </div>
 
     <div class="panel">
+      <h2>الحضور</h2>
+      <div class="sub">مين اللي حضر النهاردة، بناءً على نجمة "الحضور" في جدول تسجيل الدرجات فوق.</div>
+      <div id="attendance-summary"></div>
+    </div>
+
+    <div class="panel">
       <h2>لوحة الترتيب</h2>
       <div class="lb-toggle">
         <button class="active" data-mode="teams">ترتيب الفرق</button>
@@ -413,7 +420,7 @@
 
   </div>
 
-  <footer class="credit">القداس · مدارس الأحد · المشاركة · السلوك</footer>
+  <footer class="credit">القداس · مدارس الأحد · المشاركة · السلوك · الحضور</footer>
 </div>
 
 <div class="toast-wrap" id="toast-wrap"></div>
@@ -422,11 +429,13 @@
 (function(){
 
   const CATS = [
-    {key:'mass', label:'القداس', color:'var(--amber)', hex:'#c9862f'},
-    {key:'sunday', label:'مدارس الأحد', color:'var(--blue)', hex:'#2f5d8a'},
-    {key:'participation', label:'المشاركة', color:'var(--green)', hex:'#3f6b45'},
-    {key:'behavior', label:'السلوك', color:'var(--rose)', hex:'#8a3352'},
+    {key:'mass', label:'القداس', color:'var(--amber)', hex:'#c9862f', max:5},
+    {key:'sunday', label:'مدارس الأحد', color:'var(--blue)', hex:'#2f5d8a', max:5},
+    {key:'participation', label:'المشاركة', color:'var(--green)', hex:'#3f6b45', max:5},
+    {key:'behavior', label:'السلوك', color:'var(--rose)', hex:'#8a3352', max:5},
+    {key:'attendance', label:'الحضور', color:'var(--teal)', hex:'#3f8f8f', max:1},
   ];
+  const EMPTY_TOTALS = {mass:0,sunday:0,participation:0,behavior:0,attendance:0};
 
   // نفس رابط الشيت المستخدم في index.html
   const API_URL = 'https://script.google.com/macros/s/AKfycbw7YEzPJ90icN1qafuMmzVN4L3EN9W_m2tELMIiIISwHGN4rGFjMnYWmnZTl07UWi0ggQ/exec';
@@ -702,19 +711,20 @@
   }
   function setScore(sessionId, childId, cat, val){
     const k = sessionId+'__'+childId;
-    if(!state.scores[k]) state.scores[k] = {mass:0,sunday:0,participation:0,behavior:0};
+    if(!state.scores[k]) state.scores[k] = {...EMPTY_TOTALS};
     const prev = state.scores[k][cat];
     state.scores[k][cat] = val;
-    renderScoringGrid(); renderLeaderboard();
+    renderScoringGrid(); renderAttendanceSummary(); renderLeaderboard();
     mutateBg('setScore', {sessionId, childId, cat, val}, ()=>{
       state.scores[k][cat] = prev;
-      renderScoringGrid(); renderLeaderboard();
+      renderScoringGrid(); renderAttendanceSummary(); renderLeaderboard();
     });
   }
 
-  function starsHtml(sessionId, childId, cat, current){
+  function starsHtml(sessionId, childId, cat, current, max){
+    max = max || 5;
     let h = '<span class="stars">';
-    for(let i=1;i<=5;i++){
+    for(let i=1;i<=max;i++){
       h += `<button data-session="${sessionId}" data-child="${childId}" data-cat="${cat}" data-val="${i}" class="${i<=current?'filled':''}">★</button>`;
     }
     h += '</span>';
@@ -732,12 +742,12 @@
     state.teams.forEach(team=>{
       const kids = state.children.filter(c=>c.teamId===team.id);
       if(kids.length===0) return;
-      rows += `<tr><td colspan="5" style="color:var(--gold-light);font-weight:700;padding-top:16px;border-bottom:none;">${team.name}</td></tr>`;
+      rows += `<tr><td colspan="${CATS.length+1}" style="color:var(--gold-light);font-weight:700;padding-top:16px;border-bottom:none;">${team.name}</td></tr>`;
       kids.forEach(c=>{
         rows += `<tr><td class="name-cell">${c.name}</td>`;
         CATS.forEach(cat=>{
           const cur = getScore(sessionId, c.id, cat.key);
-          rows += `<td><span class="cat-label">${cat.label}</span>${starsHtml(sessionId, c.id, cat.key, cur)}</td>`;
+          rows += `<td><span class="cat-label">${cat.label}</span>${starsHtml(sessionId, c.id, cat.key, cur, cat.max)}</td>`;
         });
         rows += `</tr>`;
       });
@@ -745,14 +755,35 @@
     grid.innerHTML = `<div class="table-scroll"><table><tbody>${rows}</tbody></table></div>`;
     grid.querySelectorAll('.stars button').forEach(b=>{
       b.addEventListener('click', ()=>{
-        setScore(b.dataset.session, b.dataset.child, b.dataset.cat, parseInt(b.dataset.val,10));
+        const val = parseInt(b.dataset.val,10);
+        const cat = CATS.find(c=>c.key===b.dataset.cat);
+        const cur = getScore(b.dataset.session, b.dataset.child, b.dataset.cat);
+        // لو الخانة نجمة واحدة بس (زي الحضور)، الضغط تاني على نفس النجمة بيلغي التحديد بدل ما يفضل ثابت
+        const next = (cat && cat.max===1 && cur>=val) ? 0 : val;
+        setScore(b.dataset.session, b.dataset.child, b.dataset.cat, next);
       });
     });
   }
 
+  // ---------------- ملخص الحضور: مين حضر النهاردة (مبني على خانة الحضور فوق) ----------------
+  function renderAttendanceSummary(){
+    const el = document.getElementById('attendance-summary');
+    const sessionId = document.getElementById('scoring-session-select').value;
+    if(!sessionId || state.children.length===0){
+      el.innerHTML = `<div class="empty">${state.children.length===0 ? 'أضف أطفال وفريق أولاً.' : 'اختر جلسة الأول.'}</div>`;
+      return;
+    }
+    const attended = state.children.filter(c=> getScore(sessionId, c.id, 'attendance') >= 1);
+    if(attended.length===0){
+      el.innerHTML = '<div class="empty">لسه محدش اتسجل حضوره في الجلسة دي.</div>';
+      return;
+    }
+    el.innerHTML = `<div class="kids-wrap">${attended.map(c=>`<span class="kid-chip" style="padding:7px 16px;">${c.name}</span>`).join('')}</div>`;
+  }
+
   // ---------------- Totals & leaderboard ----------------
   function childCatTotals(childId){
-    const totals = {mass:0,sunday:0,participation:0,behavior:0};
+    const totals = {...EMPTY_TOTALS};
     Object.keys(state.scores).forEach(k=>{
       if(k.endsWith('__'+childId)){
         CATS.forEach(cat=> totals[cat.key]+= state.scores[k][cat.key]||0);
@@ -760,7 +791,7 @@
     });
     return totals;
   }
-  function sumTotals(t){ return t.mass+t.sunday+t.participation+t.behavior; }
+  function sumTotals(t){ return t.mass+t.sunday+t.participation+t.behavior+(t.attendance||0); }
 
   let lbMode = 'teams';
   document.querySelectorAll('.lb-toggle button').forEach(b=>{
@@ -789,7 +820,7 @@
     if(lbMode==='teams'){
       items = state.teams.map(t=>{
         const kids = state.children.filter(c=>c.teamId===t.id);
-        const totals = {mass:0,sunday:0,participation:0,behavior:0};
+        const totals = {...EMPTY_TOTALS};
         kids.forEach(c=>{
           const ct = childCatTotals(c.id);
           CATS.forEach(cat=> totals[cat.key]+=ct[cat.key]);
@@ -848,10 +879,14 @@
     renderSessionsList();
     renderSessionSelect();
     renderScoringGrid();
+    renderAttendanceSummary();
     renderLeaderboard();
   }
 
-  document.getElementById('scoring-session-select').addEventListener('change', renderScoringGrid);
+  document.getElementById('scoring-session-select').addEventListener('change', ()=>{
+    renderScoringGrid();
+    renderAttendanceSummary();
+  });
 
   (async function init(){
     const ok = await gate();

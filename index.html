@@ -22,6 +22,7 @@
     --blue:#2f5d8a;    /* مدارس الأحد */
     --green:#3f6b45;   /* المشاركة */
     --rose:#8a3352;    /* السلوك */
+    --teal:#3f8f8f;    /* الحضور */
     --line: rgba(201,162,39,0.28);
     --shadow-sm: 0 2px 10px rgba(0,0,0,.25);
     --shadow-md: 0 10px 34px rgba(0,0,0,.38);
@@ -382,7 +383,7 @@
     </div>
   </section>
 
-  <footer class="credit">القداس · مدارس الأحد · المشاركة · السلوك</footer>
+  <footer class="credit">القداس · مدارس الأحد · المشاركة · السلوك · الحضور</footer>
 </div>
 
 <script>
@@ -390,11 +391,13 @@
 
   // ---------------- Data ----------------
   const CATS = [
-    {key:'mass', label:'القداس', color:'var(--amber)', hex:'#c9862f'},
-    {key:'sunday', label:'مدارس الأحد', color:'var(--blue)', hex:'#2f5d8a'},
-    {key:'participation', label:'المشاركة', color:'var(--green)', hex:'#3f6b45'},
-    {key:'behavior', label:'السلوك', color:'var(--rose)', hex:'#8a3352'},
+    {key:'mass', label:'القداس', color:'var(--amber)', hex:'#c9862f', max:5},
+    {key:'sunday', label:'مدارس الأحد', color:'var(--blue)', hex:'#2f5d8a', max:5},
+    {key:'participation', label:'المشاركة', color:'var(--green)', hex:'#3f6b45', max:5},
+    {key:'behavior', label:'السلوك', color:'var(--rose)', hex:'#8a3352', max:5},
+    {key:'attendance', label:'الحضور', color:'var(--teal)', hex:'#3f8f8f', max:1},
   ];
+  const EMPTY_TOTALS = {mass:0,sunday:0,participation:0,behavior:0,attendance:0};
 
   const LOVE_QUALITIES = [
     "تتأنى", "ترفق", "لا تحسد", "لا تتفاخر", "لا تنتفخ",
@@ -512,7 +515,7 @@
 
   // ---------------- Totals & leaderboard (read-only) ----------------
   function childCatTotals(childId){
-    const totals = {mass:0,sunday:0,participation:0,behavior:0};
+    const totals = {...EMPTY_TOTALS};
     Object.keys(state.scores).forEach(k=>{
       if(k.endsWith('__'+childId)){
         CATS.forEach(cat=> totals[cat.key]+= state.scores[k][cat.key]||0);
@@ -520,7 +523,7 @@
     });
     return totals;
   }
-  function sumTotals(t){ return t.mass+t.sunday+t.participation+t.behavior; }
+  function sumTotals(t){ return t.mass+t.sunday+t.participation+t.behavior+(t.attendance||0); }
 
   let lbMode = 'teams';
   document.querySelectorAll('.lb-toggle button').forEach(b=>{
@@ -558,7 +561,7 @@
     if(lbMode==='teams'){
       items = state.teams.map(t=>{
         const kids = state.children.filter(c=>c.teamId===t.id);
-        const totals = {mass:0,sunday:0,participation:0,behavior:0};
+        const totals = {...EMPTY_TOTALS};
         kids.forEach(c=>{
           const ct = childCatTotals(c.id);
           CATS.forEach(cat=> totals[cat.key]+=ct[cat.key]);
